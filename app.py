@@ -34,6 +34,16 @@ def format_number(num):
 
 paises_agrupados = df.groupby('country')['netMigration'].sum().reset_index()
 
+saldo = paises_agrupados['netMigration'].values
+
+
+menor_valor_saldo = saldo.min()
+maior_valor_saldo = saldo.max()
+media_valor_saldo = (saldo.min() + saldo.max())/ 2
+media_menor_media_valor_saldo = (saldo.min() + media_valor_saldo)/ 2
+media_maior_media_valor_saldo = (saldo.max() + media_valor_saldo)/ 2
+
+
 def create_map(feature):
 
     linha = paises_agrupados[paises_agrupados['country'] == feature['properties']['name']]
@@ -41,35 +51,39 @@ def create_map(feature):
     if linha.empty:
         return {'fillColor': 'gray', 'fillOpacity': 1}
     else :
-        if linha['netMigration'].values[0] < 0:
+        if menor_valor_saldo <= linha['netMigration'].values[0] < media_menor_media_valor_saldo:
             return {'fillColor': 'red', 'fillOpacity': 1}
-        elif 0 < linha['netMigration'].values[0] < 6583164:
-            return {'fillColor': 'yellow', 'fillOpacity': 1}
-        elif linha['netMigration'].values[0] > 6583164:
-            return {'fillColor': 'green', 'fillOpacity': 1}
+        elif media_menor_media_valor_saldo < linha['netMigration'].values[0] <= media_valor_saldo:
+            return {'fillColor': '#FF7F00', 'fillOpacity': 1}
+        elif media_saldo_abs < linha['netMigration'].values[0] <= media_maior_media_valor_saldo:
+            return {'fillColor': '#FFFF00', 'fillOpacity': 1}
         return {'fillColor': 'green', 'fillOpacity': 1}
 
 
 def add_legend(map_object):
-    legend_html = """
+    legend_html = f"""
     <div style="
         position: fixed; 
-        bottom: 20px; left: 20px; width: 200px; height: 150px; 
+        bottom: 20px; left: 20px; width: 240px; height: 170px; 
         background-color: white; z-index:9999; font-size:14px;
         border:2px solid grey; border-radius:5px; padding:10px; display: flex; flex-direction: column; gap: 8px">
         <b>Legenda:</b>
         <div style=" display: flex; flex-direction: column; gap: 4px;">
             <div>
                 <i style="background:green; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> Taxa > 6583164</label>
+                <label style = "font-weight: bold;font-size: 12px;"> {media_maior_media_valor_saldo} < Saldo <= {maior_valor_saldo}</label>
             </div>
             <div>
-                <i style="background:yellow; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> 0 < Taxa < 6583164</label>
+                <i style="background:#FFFF00; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                <label style = "font-weight: bold;font-size: 12px;"> {media_valor_saldo} <= Saldo < {media_maior_media_valor_saldo}</label>
+            </div>
+            <div>
+                <i style="background:#FF7F00; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                <label style = "font-weight: bold;font-size: 12px;">{media_menor_media_valor_saldo} <= Saldo < {media_valor_saldo} </label>
             </div>
             <div>
                 <i style="background:red; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> Taxa < 0 </label>
+                <label style = "font-weight: bold;font-size: 12px;"> {menor_valor_saldo} <= Saldo < {media_menor_media_valor_saldo} </label>
             </div>
             <div>
                 <i style="background:gray; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i> 
@@ -79,6 +93,11 @@ def add_legend(map_object):
     </div>
     """
     map_object.get_root().html.add_child(folium.Element(legend_html))
+
+
+def style_df(val):
+    color = 'green' if val > 0 else 'red'
+    return f'color: {color}; font-weight: bold; font-size: 20px;'
 
 
 main_col1, main_col2 = st.columns(2)
@@ -115,10 +134,10 @@ with main_col1:
         add_legend(m)
         st.components.v1.html(m._repr_html_(), height=400)
 
-    st.markdown("### Taxa migratória agrupada por país")
-    paises_agrupados_renomeado = paises_agrupados.rename(columns={'netMigration': 'Taxa Migratória', 'country': 'Nome do país'})
+    st.markdown("### Saldo migratório agrupado por país")
+    paises_agrupados_renomeado = paises_agrupados.rename(columns={'netMigration': 'Saldo Migratório', 'country': 'Nome do país'})
     paises_agrupados_renomeado = paises_agrupados_renomeado.reset_index(drop=True)
-    st.dataframe(paises_agrupados_renomeado, height=400, width=600)
+    st.dataframe(paises_agrupados_renomeado.style.applymap(style_df, subset=['Saldo Migratório']).format({"Saldo Migratório": "{:.1f}"}), height=350, width=600)
 
 
 
@@ -136,7 +155,7 @@ with main_col2:
 
     with container:
         
-        st.markdown("### Top 10 taxas migratórias mundiais")
+        st.markdown("### Top 10 saldos migratórios mundiais")
         
         dropdown = st.selectbox('Filtrar', sorter_order)
         selected_year = st.slider('Filtrar por um determinado ano', min_year, max_year)
@@ -152,7 +171,7 @@ with main_col2:
         st.bar_chart(top_10_filtrados_ano.set_index('country').sort_values('netMigration', ascending=False), height=300)
 
 
-        st.markdown("### Histórico migratório por país durante todo o período analisado")
+        st.markdown("### Histórico migratório durante todo o período analisado")
 
         dropdown = st.selectbox('Escolha um país', lista_paises)
 
