@@ -55,7 +55,7 @@ def create_map(feature):
             return {'fillColor': 'red', 'fillOpacity': 1}
         elif media_menor_media_valor_saldo < linha['netMigration'].values[0] <= media_valor_saldo:
             return {'fillColor': '#FF7F00', 'fillOpacity': 1}
-        elif media_saldo_abs < linha['netMigration'].values[0] <= media_maior_media_valor_saldo:
+        elif media_valor_saldo < linha['netMigration'].values[0] <= media_maior_media_valor_saldo:
             return {'fillColor': '#FFFF00', 'fillOpacity': 1}
         return {'fillColor': 'green', 'fillOpacity': 1}
 
