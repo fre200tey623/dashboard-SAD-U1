@@ -60,6 +60,7 @@ def create_map(feature):
         return {'fillColor': 'green', 'fillOpacity': 1}
 
 
+
 def add_legend(map_object):
     legend_html = f"""
     <div style="
@@ -67,27 +68,27 @@ def add_legend(map_object):
         bottom: 20px; left: 20px; width: 240px; height: 170px; 
         background-color: white; z-index:9999; font-size:14px;
         border:2px solid grey; border-radius:5px; padding:10px; display: flex; flex-direction: column; gap: 8px">
-        <b>Legenda:</b>
+        <b>Migrações:</b>
         <div style=" display: flex; flex-direction: column; gap: 4px;">
             <div>
                 <i style="background:green; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> {media_maior_media_valor_saldo} < Saldo <= {maior_valor_saldo}</label>
+                <label style = "font-weight: bold;font-size: 12px;"> Mais de 45 milhões </label>
             </div>
             <div>
                 <i style="background:#FFFF00; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> {media_valor_saldo} <= Saldo < {media_maior_media_valor_saldo}</label>
+                <label style = "font-weight: bold;font-size: 12px;"> 23 milhões - 45 milhões </label>
             </div>
             <div>
                 <i style="background:#FF7F00; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;">{media_menor_media_valor_saldo} <= Saldo < {media_valor_saldo} </label>
+                <label style = "font-weight: bold;font-size: 12px;"> 1 milhão - 23 milhões </label>
             </div>
             <div>
                 <i style="background:red; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                <label style = "font-weight: bold;font-size: 12px;"> {menor_valor_saldo} <= Saldo < {media_menor_media_valor_saldo} </label>
+                <label style = "font-weight: bold;font-size: 12px;"> Menos de 1M </label>
             </div>
             <div>
                 <i style="background:gray; color:white; border: 1px solid black;">&nbsp;&nbsp;&nbsp;&nbsp;</i> 
-                <label style = "font-weight: bold;font-size: 12px;"> Não consta no dataset </label>
+                <label style = "font-weight: bold;font-size: 12px;"> Não consta </label>
             </div>
         </div>
     </div>
