@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import folium
 import json 
+import numpy as np
 
 #Cabeçalho
 st.title("Conjunto de dados sobre população global e migração")
@@ -37,11 +38,12 @@ paises_agrupados = df.groupby('country')['netMigration'].sum().reset_index()
 saldo = paises_agrupados['netMigration'].values
 
 
-menor_valor_saldo = saldo.min()
-maior_valor_saldo = saldo.max()
+menor_valor_saldo = np.min(saldo)
+maior_valor_saldo = np.max(saldo)
 media_valor_saldo = (saldo.min() + saldo.max())/ 2
 media_menor_media_valor_saldo = (saldo.min() + media_valor_saldo)/ 2
 media_maior_media_valor_saldo = (saldo.max() + media_valor_saldo)/ 2
+
 
 
 def create_map(feature):
@@ -110,21 +112,21 @@ with main_col1:
     with col1:
         container = st.container(border=True)
         with container:
-            st.text('Total de migrações ')
+            st.markdown('###### Total de migrações liquidas')
             st.markdown(f'#### 🌍 {format_number(total_migration)}')
 
     with col2:
         year_with_most_migration = df.groupby('year')['netMigration'].sum().idxmax()
         container = st.container(border=True)
         with container:
-            st.text('Ano com mais migrações')
+            st.markdown('###### Ano com mais migrações')
             st.markdown(f'#### 📆 {year_with_most_migration}')
 
     with col3:
         country_with_most_migration = df.groupby('country')['netMigration'].sum().idxmax()
         container = st.container(border=True)
         with container:
-            st.text('País com mais migração')
+            st.markdown('###### País com mais migração')
             st.markdown(f'#### {country_with_most_migration}')
 
 
