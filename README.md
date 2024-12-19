@@ -6,3 +6,4 @@
 
 ## André Lucas Ávila Lima
 ## Luis Fernando Souza de Araujo
+## Samuel Augusto Souza Alves Santana
