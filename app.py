@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import folium
-import json
+import json 
 
 #Cabeçalho
 st.title("Conjunto de dados sobre população global e migração")
